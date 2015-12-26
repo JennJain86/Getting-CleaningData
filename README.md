@@ -44,6 +44,8 @@ The sensor signals (accelerometer and gyroscope) were pre-processed by applying 
 
 
 ***
+##run_analysis.R does the following to generate a tidy dataset:
+
 ### Merge the training and test datasets to create one dataset
 Merging the two datasets into one is done in several steps throughout `run_analysis.R`
 
