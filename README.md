@@ -41,3 +41,71 @@ The sensor signals (accelerometer and gyroscope) were pre-processed by applying 
 `dplyr`
 `magrittr`
 `plyr`
+
+
+***
+### Merge the training and test datasets to create one dataset
+Merging the two datasets into one is done in several steps throughout `run_analysis.R`
+
+#### Working With the Test Data 
+
+
+1. First we load variable names and activity labels for analysis using `data.table`
+       + The variable names are stored in `features.txt` and the activity lables are stored in `activity_labels.txt`. Both of these files are located in `UCI\ HAR\ Dataset`.
+
+
+
+
+2. Next we load the test data (`X_test.txt`, `y_test.txt` and `subject_test.txt`).
+
+#### Extract only the measurements on the mean and standard deviation for each measurement in the test data
+
+3. Using the `grepl` function we are able to search `variable_names` for strings matching mean and standard deviation, and then assign them to a new variable called `measurment_variables_test`.
+
+````
+measurment_variables_test <- grepl("mean|std", variable_names)
+````
+4. The `y_test.txt` file is used to create the `Subject`, `Activity_ID`, and `Activity_Label` data labels for the test data.
+
+5. A `test_dataset` is created uning `cbind`
+
+
+#### Working With the Training Data 
+
+
+6. We load the training data (`X_train.txt`, `y_train.txt` and `subject_train.txt`).
+
+#### Extract only the measurements on the mean and standard deviation for each measurement in the test data
+
+7. Using the `grepl` function we are able to search `variable_names` for strings matching mean and standard deviation, and then assign them to a new variable called `measurment_variables_test`.
+
+````
+measurment_variables_training <- grepl("mean|std", variable_names)
+````
+8. The `y_train.txt` file is used to create the `Subject`, `Activity_ID`, and `Activity_Label` data labels for the test data.
+
+9. A `training_dataset` is created using `cbind`
+
+10. ##### Merge the training and test datasets to create one dataset
+
+````
+clean_dataset <-rbind(training_dataset, test_dataset)
+````
+
+###Appropriately labels the data set with descriptive variable names
+
+11.  We use the gsub function to clean up some of the abbreviations in the `clean_dataset` variable names so they be more intuative.
+
+````
+ames(clean_dataset)<-gsub("^t", "Time-", names(clean_dataset))
+names(clean_dataset)<-gsub("Acc", "Accelerometer-", names(clean_dataset))
+names(clean_dataset)<-gsub("Mag", "Magnitude-", names(clean_dataset))
+names(clean_dataset)<-gsub("Gyro", "Gyroscope-", names(clean_dataset))
+names(clean_dataset)<-gsub("^f", "Freq-", names(clean_dataset))
+````
+12. Group `clean_dataset` by `Subject` and `Activity_ID` and `summarize_each` to get the mean of each variable for each activity and each subject.
+
+
+13. Drop `Activity_ID` and export `tidy_data.txt`.
+        
+***
